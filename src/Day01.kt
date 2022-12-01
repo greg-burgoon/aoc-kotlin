@@ -1,5 +1,4 @@
 import java.util.*
-import java.util.concurrent.BlockingQueue
 
 fun main() {
     fun part1(input: String): Int {
