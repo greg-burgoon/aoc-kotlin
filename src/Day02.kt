@@ -1,7 +1,7 @@
 import java.util.*
 
 fun main() {
-    val conclusionMap = mutableMapOf(
+    val conclusionMap = mapOf(
         "A X" to 3,
         "A Y" to 6,
         "A Z" to 0,
@@ -13,7 +13,7 @@ fun main() {
         "C Z" to 3
     )
 
-    val winLoseDrawMap = mutableMapOf(
+    val winLoseDrawMap = mapOf(
         "A X" to "A Z",
         "A Y" to "A X",
         "A Z" to "A Y",
@@ -25,7 +25,7 @@ fun main() {
         "C Z" to "C X"
     )
 
-    val moveMap = mutableMapOf(
+    val moveMap = mapOf(
         "X" to 1,
         "Y" to 2,
         "Z" to 3
