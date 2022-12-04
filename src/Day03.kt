@@ -30,16 +30,12 @@ fun main() {
 
     fun part2(input: String): Int {
         return input.split("\n")
-            .mapIndexed { index, s ->  if ((index + 1) % 3 == 0) s + "\n" else s }
-            .joinToString("\n")
-            .split("\n\n")
+            .windowed(3, 3)
             .map {
-
                 var setOne = HashSet<Char>()
                 var setTwo = HashSet<Char>()
                 var setThree = HashSet<Char>()
                 it
-                    .split("\n")
                     .forEachIndexed { index, s ->
                         if (index == 0) s.forEach { c ->  setOne.add(c)}
                         else if (index == 1) s.forEach { c ->  setTwo.add(c)}
