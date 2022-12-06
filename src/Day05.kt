@@ -1,38 +1,47 @@
-import java.util.Queue
-
 fun main() {
-    fun part1(input: String, numberOfStacks: Int): String {
-        val inputs = input.split("\n\n")
+
+    fun parseStacks(input: String, numberOfStacks: Int): List<ArrayDeque<Char>> {
         var stacks = ArrayList<ArrayDeque<Char>>()
-        for (i in 0..numberOfStacks-1) {
-            stacks.add(ArrayDeque(1))
+        repeat(numberOfStacks) {
+            stacks.add(ArrayDeque<Char>())
         }
-        inputs.get(0)
+        input
             .split("\n")
             .map {
-                var count = 0;
-                it.toCharArray()
-                    .toList()
+                it.toList()
                     .windowed(3, 4)
-                    .forEach {
-                        val letter = it.get(1)
+                    .forEachIndexed { index, chars ->
+                        val letter = chars.get(1)
                         if (letter != ' ' && letter.isLetter()) {
-                            stacks.get(count).add(letter)
+                            stacks.get(index).add(letter)
                         }
-                        count++
                     }
             }
-        for (i in 0..numberOfStacks-1) {
-            stacks.get(i).reverse()
+        return stacks.map {
+            it.reverse()
+            it
         }
-        inputs.get(1)
+    }
+
+    fun parseInstructions(input: String): List<List<Int>> {
+        return input
             .split("\n")
             .map {
                 it.split("\\D+".toRegex())
-            }.forEach {
-                val amount = it.get(1).toInt()
-                val fromStack = stacks.get(it.get(2).toInt()-1)
-                val toStack = stacks.get(it.get(3).toInt()-1)
+                    .filter { it.isNotBlank() }
+                    .map {
+                        it.toInt()
+                    }
+            }
+    }
+
+    fun part1(input: String, numberOfStacks: Int): String {
+        val inputs = input.split("\n\n")
+        val stacks = parseStacks(inputs[0], numberOfStacks)
+        val instructions = parseInstructions(inputs[1])
+        instructions.forEach {(amount, fromIndex, toIndex) ->
+                val fromStack = stacks[fromIndex-1]
+                val toStack = stacks[toIndex-1]
                 for (i in 1..amount) {
                     toStack.add(fromStack.removeLast())
                 }
@@ -44,44 +53,19 @@ fun main() {
 
     fun part2(input: String, numberOfStacks: Int): String {
         val inputs = input.split("\n\n")
-        var stacks = ArrayList<ArrayDeque<Char>>()
-        for (i in 0..numberOfStacks-1) {
-            stacks.add(ArrayDeque(1))
-        }
-        inputs.get(0)
-            .split("\n")
-            .map {
-                var count = 0;
-                it.toCharArray()
-                    .toList()
-                    .windowed(3, 4)
-                    .forEach {
-                        val letter = it.get(1)
-                        if (letter != ' ' && letter.isLetter()) {
-                            stacks.get(count).add(letter)
-                        }
-                        count++
-                    }
+        val stacks = parseStacks(inputs[0], numberOfStacks)
+        val instructions = parseInstructions(inputs[1])
+        instructions.forEach {(amount, fromIndex, toIndex) ->
+            val fromStack = stacks[fromIndex-1]
+            val toStack = stacks[toIndex-1]
+            val tempStack = ArrayDeque<Char>()
+            for (index in fromStack.count()-1 downTo  fromStack.count()-amount) {
+                tempStack.add(fromStack.removeAt(index))
             }
-        for (i in 0..numberOfStacks-1) {
-            stacks.get(i).reverse()
+            toStack.addAll(tempStack.reversed())
         }
-        inputs.get(1)
-            .split("\n")
-            .map {
-                it.split("\\D+".toRegex())
-            }.forEach {
-                val amount = it.get(1).toInt()
-                val fromStack = stacks.get(it.get(2).toInt()-1)
-                val toStack = stacks.get(it.get(3).toInt()-1)
-                val tempStack = ArrayDeque<Char>()
-                for (index in fromStack.count()-1 downTo  fromStack.count()-amount) {
-                    tempStack.add(fromStack.removeAt(index))
-                }
-                toStack.addAll(tempStack.reversed())
-            }
         return stacks.map {
-            it.lastOrNull()
+            it.last()
         }.joinToString("")
     }
 
