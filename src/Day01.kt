@@ -2,37 +2,23 @@ import java.util.*
 
 fun main() {
     fun part1(input: String): Int {
-        val elves = input.split("\n\n")
-
-        var mostCalories = 0
-        for (elf in elves) {
-            var totalCalories = 0;
-            val calories = elf.split("\n")
-            for (calorie in calories) {
-                totalCalories += Integer.parseInt(calorie)
-            }
-            mostCalories = Math.max(mostCalories, totalCalories)
-        }
-
-        return mostCalories
+        return input.split("\n\n")
+            .map {
+                it.split("\n").sumOf {
+                    it.toInt()
+                }
+            }.max()
     }
 
     fun part2(input: String): Int {
-        val elves = input.split("\n\n")
-
-        var orderedCalories = TreeSet<Int>()
-        for (elf in elves) {
-            var totalCalories = 0;
-            val calories = elf.split("\n")
-            for (calorie in calories) {
-                totalCalories += Integer.parseInt(calorie)
-            }
-            orderedCalories.add(totalCalories)
-        }
-        val highest = orderedCalories.pollLast()
-        val nextHighest = orderedCalories.pollLast()
-        val lastHighest = orderedCalories.pollLast()
-        return highest + nextHighest + lastHighest
+        return input.split("\n\n")
+            .map {
+                it.split("\n").sumOf {
+                    it.toInt()
+                }
+            }.sortedDescending()
+            .subList(0,3)
+            .sum()
     }
 
     // test if implementation meets criteria from the description, like:
