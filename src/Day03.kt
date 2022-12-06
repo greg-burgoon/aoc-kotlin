@@ -19,33 +19,25 @@ fun main() {
     fun part1(input: String): Int {
         return input.split("\n")
             .map {
-                var setOne = HashSet<Char>()
-                var setTwo = HashSet<Char>()
-                it.forEachIndexed { index, c ->  if (index < it.count()/2) setOne.add(c) else setTwo.add(c)}
-                setOne.retainAll(setTwo)
-                setOne.first()
+                listOf(it.substring(0, it.length/2).toSet(), it.substring(it.length/2).toSet())
+            }.map {(setOne, setTwo) ->
+                priorityValues.getOrDefault(setOne.intersect(setTwo)
+                    .first(), 0)
             }
-            .sumOf { c: Char -> priorityValues.getOrDefault(c, 0) }
+            .sum()
     }
 
     fun part2(input: String): Int {
         return input.split("\n")
             .windowed(3, 3)
-            .map {
-                var setOne = HashSet<Char>()
-                var setTwo = HashSet<Char>()
-                var setThree = HashSet<Char>()
-                it
-                    .forEachIndexed { index, s ->
-                        if (index == 0) s.forEach { c ->  setOne.add(c)}
-                        else if (index == 1) s.forEach { c ->  setTwo.add(c)}
-                        else if (index == 2) s.forEach { c ->  setThree.add(c)}
+            .flatMap { (first, second, third) ->
+                first.toSet()
+                    .intersect(second.toSet())
+                    .intersect(third.toSet())
+                    .map {
+                        c: Char -> priorityValues.getOrDefault(c, 0)
                     }
-                setOne.retainAll(setTwo)
-                setOne.retainAll(setThree)
-                setOne.first()
-            }
-            .sumOf { c: Char -> priorityValues.getOrDefault(c, 0) }
+            }.sum()
     }
 
     // test if implementation meets criteria from the description, like:
