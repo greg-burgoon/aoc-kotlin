@@ -5,8 +5,8 @@ fun main() {
             .map {
                 var rangeOne = it.split(",")[0].split("-")
                 var rangeTwo = it.split(",")[1].split("-")
-                val setOne = sequence{yieldAll(rangeOne[0].toInt() .. rangeOne[1].toInt())}.toMutableSet()
-                val setTwo = sequence{yieldAll(rangeTwo[0].toInt() .. rangeTwo[1].toInt())}.toMutableSet()
+                val setOne =(rangeOne[0].toInt() .. rangeOne[1].toInt()).toMutableSet()
+                val setTwo = (rangeTwo[0].toInt() .. rangeTwo[1].toInt()).toMutableSet()
                 val setOneSize = setOne.size
                 val setTwoSize = setTwo.size
                 setOne.retainAll(setTwo)
@@ -24,8 +24,8 @@ fun main() {
             .map {
                 var rangeOne = it.split(",")[0].split("-")
                 var rangeTwo = it.split(",")[1].split("-")
-                val setOne = sequence{yieldAll(rangeOne[0].toInt() .. rangeOne[1].toInt())}.toMutableSet()
-                val setTwo = sequence{yieldAll(rangeTwo[0].toInt() .. rangeTwo[1].toInt())}.toMutableSet()
+                val setOne =(rangeOne[0].toInt() .. rangeOne[1].toInt()).toMutableSet()
+                val setTwo = (rangeTwo[0].toInt() .. rangeTwo[1].toInt()).toMutableSet()
                 val setOneSize = setOne.size
                 val setTwoSize = setTwo.size
                 setOne.retainAll(setTwo)
