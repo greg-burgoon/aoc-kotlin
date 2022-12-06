@@ -3,20 +3,10 @@ fun main() {
     fun part1(input: String): Int {
         return input.split("\n")
             .map {
-                var rangeOne = it.split(",").get(0).split("-")
-                var rangeTwo = it.split(",").get(1).split("-")
-                val setOne = generateSequence(rangeOne.get(0).toInt()) {
-                    if (it < rangeOne.get(1).toInt())
-                        it + 1
-                    else
-                        null
-                }.toMutableSet()
-                val setTwo = generateSequence(rangeTwo.get(0).toInt()) {
-                    if (it < rangeTwo.get(1).toInt())
-                        it + 1
-                    else
-                        null
-                }.toMutableSet()
+                var rangeOne = it.split(",")[0].split("-")
+                var rangeTwo = it.split(",")[1].split("-")
+                val setOne = sequence{yieldAll(rangeOne[0].toInt() .. rangeOne[1].toInt())}.toMutableSet()
+                val setTwo = sequence{yieldAll(rangeTwo[0].toInt() .. rangeTwo[1].toInt())}.toMutableSet()
                 val setOneSize = setOne.size
                 val setTwoSize = setTwo.size
                 setOne.retainAll(setTwo)
@@ -32,20 +22,10 @@ fun main() {
     fun part2(input: String): Int {
         return input.split("\n")
             .map {
-                var rangeOne = it.split(",").get(0).split("-")
-                var rangeTwo = it.split(",").get(1).split("-")
-                val setOne = generateSequence(rangeOne.get(0).toInt()) {
-                    if (it < rangeOne.get(1).toInt())
-                        it + 1
-                    else
-                        null
-                }.toMutableSet()
-                val setTwo = generateSequence(rangeTwo.get(0).toInt()) {
-                    if (it < rangeTwo.get(1).toInt())
-                        it + 1
-                    else
-                        null
-                }.toMutableSet()
+                var rangeOne = it.split(",")[0].split("-")
+                var rangeTwo = it.split(",")[1].split("-")
+                val setOne = sequence{yieldAll(rangeOne[0].toInt() .. rangeOne[1].toInt())}.toMutableSet()
+                val setTwo = sequence{yieldAll(rangeTwo[0].toInt() .. rangeTwo[1].toInt())}.toMutableSet()
                 val setOneSize = setOne.size
                 val setTwoSize = setTwo.size
                 setOne.retainAll(setTwo)
