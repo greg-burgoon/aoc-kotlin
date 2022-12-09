@@ -5,48 +5,57 @@ enum class DIRECTION {
 }
 
 fun main() {
-    class Position(x: Int, y: Int){
+    class Position(x: Int, y: Int, tail: Position?){
         var x = x
         var y = y
+        val tail = tail
         var positionHistory = HashSet<Position>()
 
         fun copyPosition(): Position{
-            return Position(this.x, this.y)
+            return Position(this.x, this.y, null)
         }
 
-        fun keepUpWithPosition(headPosition: Position) {
-            val deltaX = headPosition.x - this.x
-            val deltaY = headPosition.y - this.y
+        fun adjustTail() {
+            if (tail == null) {
+                return
+            }
+            val deltaX = this.x - tail.x
+            val deltaY = this.y - tail.y
             val distance = sqrt(((deltaX*deltaX) + (deltaY*deltaY)).toDouble())
             if (distance == 2.0) {
                 //decide if we go with delta X, delta Y
                 if (deltaX == 0) {
                     if (Math.abs(deltaY) == deltaY) {
-                        this.y++
+                        tail.y++
                     } else {
-                        this.y--
+                        tail.y--
                     }
                 } else {
                     if (Math.abs(deltaX) == deltaX) {
-                        this.x++
+                        tail.x++
                     } else {
-                        this.x--
+                        tail.x--
                     }
                 }
 
             } else if (distance > 2.0) {
                 if (Math.abs(deltaX) == deltaX) {
-                    this.x++
+                    tail.x++
                 } else {
-                    this.x--
+                    tail.x--
                 }
                 if (Math.abs(deltaY) == deltaY) {
-                    this.y++
+                    tail.y++
                 } else {
-                    this.y--
+                    tail.y--
                 }
             }
-            positionHistory.add(this.copyPosition())
+            tail.adjustTailAndHistory()
+        }
+
+        fun adjustTailAndHistory() {
+            this.positionHistory.add(this.copyPosition())
+            this.adjustTail()
         }
 
         override fun equals(other: Any?): Boolean =
@@ -60,8 +69,8 @@ fun main() {
     }
 
     fun part1(input: String): Int {
-        var head = Position(0,0)
-        var tail = Position(0,0)
+        var tail = Position(0,0, null)
+        var head = Position(0,0, tail)
         input.split("\n")
             .map {
                 listOf(it.split(" ")[0], it.split(" ")[1])
@@ -73,25 +82,25 @@ fun main() {
                     DIRECTION.UP -> {
                         repeat(steps) {
                             head.y++
-                            tail.keepUpWithPosition(head)
+                            head.adjustTail()
                         }
                     }
                     DIRECTION.DOWN -> {
                         repeat(steps) {
                             head.y--
-                            tail.keepUpWithPosition(head)
+                            head.adjustTail()
                         }
                     }
                     DIRECTION.LEFT -> {
                         repeat(steps) {
                             head.x--
-                            tail.keepUpWithPosition(head)
+                            head.adjustTail()
                         }
                     }
                     DIRECTION.RIGHT -> {
                         repeat(steps) {
                             head.x++
-                            tail.keepUpWithPosition(head)
+                            head.adjustTail()
                         }
                     }
                 }
@@ -100,8 +109,14 @@ fun main() {
     }
 
     fun part2(input: String): Int {
-        var head = Position(0,0)
-        var tail = Position(0,0)
+        var tail = Position(0,0, null)
+        var previousTail = tail
+        var head = previousTail
+        repeat(9) {
+            head = Position(0,0, previousTail)
+            previousTail = head
+        }
+
         input.split("\n")
             .map {
                 listOf(it.split(" ")[0], it.split(" ")[1])
@@ -113,25 +128,25 @@ fun main() {
                     DIRECTION.UP -> {
                         repeat(steps) {
                             head.y++
-                            tail.keepUpWithPosition(head)
+                            head.adjustTail()
                         }
                     }
                     DIRECTION.DOWN -> {
                         repeat(steps) {
                             head.y--
-                            tail.keepUpWithPosition(head)
+                            head.adjustTail()
                         }
                     }
                     DIRECTION.LEFT -> {
                         repeat(steps) {
                             head.x--
-                            tail.keepUpWithPosition(head)
+                            head.adjustTail()
                         }
                     }
                     DIRECTION.RIGHT -> {
                         repeat(steps) {
                             head.x++
-                            tail.keepUpWithPosition(head)
+                            head.adjustTail()
                         }
                     }
                 }
@@ -143,6 +158,10 @@ fun main() {
     val testInput = readInput("Day09_test")
     val output = part1(testInput)
     check(output == 13)
+
+    val testInputTwo = readInput("Day09_test2")
+    val outputTwo = part2(testInputTwo)
+    check(outputTwo == 36)
 
     val input = readInput("Day09")
     println(part1(input))
