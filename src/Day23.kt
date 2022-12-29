@@ -172,12 +172,105 @@ fun main() {
     }
 
     fun part2(input: String): Int {
-        return 0
+        var coordMap = mutableMapOf<Coord, Boolean>()
+        input.split("\n").forEachIndexed { y, s ->
+            s.forEachIndexed { x, c ->
+                if (c == '#') {
+                    coordMap[Coord(y,x)] = true
+                }
+            }
+        }
+        var numberOfElves = coordMap.keys.size
+
+        var moved = true
+        var directionSequence = ArrayDeque<Direction>()
+        directionSequence.add(Direction.NORTH)
+        directionSequence.add(Direction.SOUTH)
+        directionSequence.add(Direction.WEST)
+        directionSequence.add(Direction.EAST)
+        var round = 0
+        while (moved) {
+            var proposedMoves = mutableMapOf<Coord, Int>()
+            var transitions = mutableMapOf<Coord, Coord>()
+            coordMap.filter { it.value == true }.keys.forEach { coord ->
+                var nextCoord: Coord? = null
+                var moveMap = mutableMapOf<Direction,Int>()
+                directionSequence.forEach {
+                    when(it) {
+                        Direction.NORTH -> {
+                            var canMove = !coordMap.getOrDefault(coord.NW(), false) &&
+                                    !coordMap.getOrDefault(coord.N(), false) &&
+                                    !coordMap.getOrDefault(coord.NE(), false)
+                            if (nextCoord == null && canMove) {
+                                nextCoord = coord.N()
+                            }
+                            if (canMove) {
+                                moveMap[Direction.NORTH] = 1
+                            }
+                        }
+                        Direction.SOUTH -> {
+                            var canMove = !coordMap.getOrDefault(coord.SW(), false) &&
+                                    !coordMap.getOrDefault(coord.S(), false) &&
+                                    !coordMap.getOrDefault(coord.SE(), false)
+                            if (nextCoord == null && canMove) {
+                                nextCoord = coord.S()
+                            }
+                            if (canMove) {
+                                moveMap[Direction.SOUTH] = 1
+                            }
+                        }
+                        Direction.WEST -> {
+                            var canMove = !coordMap.getOrDefault(coord.NW(), false) &&
+                                    !coordMap.getOrDefault(coord.W(), false) &&
+                                    !coordMap.getOrDefault(coord.SW(), false)
+                            if (nextCoord == null && canMove) {
+                                nextCoord = coord.W()
+                            }
+                            if (canMove) {
+                                moveMap[Direction.WEST] = 1
+                            }
+                        }
+                        else -> {
+                            var canMove = !coordMap.getOrDefault(coord.NE(), false) &&
+                                    !coordMap.getOrDefault(coord.E(), false) &&
+                                    !coordMap.getOrDefault(coord.SE(), false)
+                            if (nextCoord == null && canMove) {
+                                nextCoord = coord.E()
+                            }
+                            if (canMove) {
+                                moveMap[Direction.EAST] = 1
+                            }
+                        }
+                    }
+                }
+                if (moveMap.values.sum() == 4) {
+                    //noop
+                } else if (nextCoord != null) {
+                    proposedMoves[nextCoord!!] = proposedMoves.getOrDefault(nextCoord!!, 0) + 1
+                    transitions[nextCoord!!] = coord
+                }
+            }
+            var newMoves = proposedMoves.filter {
+                it.value == 1
+            }
+
+            newMoves.keys.forEach {
+                coordMap[transitions[it]!!] = false
+                coordMap[it] = true
+            }
+            moved = newMoves.isNotEmpty()
+            directionSequence.addLast(directionSequence.removeFirst())
+            round++
+        }
+        return round
     }
 
     val testInput = readInput("Day23_test")
     val output = part1(testInput)
     check(output == 110)
+
+    val outputTwo = part2(testInput)
+    check(outputTwo == 20)
 
     val input = readInput("Day23")
     println(part1(input))
